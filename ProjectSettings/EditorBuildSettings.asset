@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/DungeonMap.unity
     guid: faa1665bb1d00f34db776f0f43db0261
   - enabled: 1
-    path: Assets/Scenes/FightRoom.unity
+    path: Assets/Scenes/DungeonRoom.unity
     guid: bde863870d00ffd4096e7dac47809601
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
