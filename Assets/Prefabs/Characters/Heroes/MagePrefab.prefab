@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1281.088, y: 1440, z: 0}
-  m_LocalScale: {x: 0.8, y: 1.5, z: 0.5}
+  m_LocalScale: {x: 30, y: 50, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -132,6 +132,7 @@ MonoBehaviour:
     attack: 0
     defense: 0
     initiative: 0
+  visualRenderer: {fileID: 0}
   heroName: Mage
   baseMaxHP: 70
   baseAttack: 30

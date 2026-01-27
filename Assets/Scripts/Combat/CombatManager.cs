@@ -13,14 +13,16 @@ public class CombatManager : MonoBehaviour
 
 
     [Header("Prefabs")]
-    public GameObject heroPrefab;
+    public GameObject[] heroPrefabs;
     public GameObject enemyPrefab;
     public GameObject iconPrefab;
+    public GameObject turnIconPrefab;
 
 
     [Header("UI Containers")]
     public Transform allyIconContainer;
     public Transform enemyIconContainer;
+    public Transform turnOrderContainer;
 
 
     [Header("Colors")]
@@ -32,7 +34,7 @@ public class CombatManager : MonoBehaviour
     private List<FighterIconUI> allyIcons = new List<FighterIconUI>();
     private List<FighterIconUI> enemyIcons = new List<FighterIconUI>();
     private List<Character> turnOrder = new List<Character>();
-    private int currentTurnIndex;
+    private List<GameObject> turnOrderIcons = new List<GameObject>();
     private Character currentCharacter;
     private bool waitingForTargetSelection;
 
@@ -50,7 +52,13 @@ public class CombatManager : MonoBehaviour
     {
         for (int i = 0; i < 4; i++)
         {
-            GameObject heroObj = Instantiate(heroPrefab, allyPositions[i].position, allyPositions[i].rotation);
+            if (heroPrefabs == null || i >= heroPrefabs.Length || heroPrefabs[i] == null)
+            {
+                Debug.LogWarning($"Hero prefab manquant à l'index {i}");
+                continue;
+            }
+
+            GameObject heroObj = Instantiate(heroPrefabs[i], allyPositions[i].position, allyPositions[i].rotation);
             Hero hero = heroObj.GetComponent<Hero>();
             if (hero != null)
             {
@@ -92,6 +100,7 @@ public class CombatManager : MonoBehaviour
         while (true)
         {
             CalculateTurnOrder();
+            UpdateTurnOrderDisplay();
 
             foreach (Character fighter in turnOrder)
             {
@@ -99,7 +108,8 @@ public class CombatManager : MonoBehaviour
                     continue;
 
                 currentCharacter = fighter;
-                HighlightcurrentCharacter(fighter);
+                HighlightCurrentFighter(fighter);
+                UpdateTurnOrderDisplay();
 
                 if (allies.Contains(fighter))
                 {
@@ -111,9 +121,12 @@ public class CombatManager : MonoBehaviour
                 }
 
                 UpdateAllIcons();
+                UpdateTurnOrderDisplay();
 
                 if (CheckVictory())
+                {
                     yield break;
+                }
             }
         }
     }
@@ -136,7 +149,9 @@ public class CombatManager : MonoBehaviour
         waitingForTargetSelection = true;
 
         while (waitingForTargetSelection)
+        {
             yield return null;
+        }
 
         SetEnemyIconsClickable(false);
     }
@@ -145,104 +160,224 @@ public class CombatManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        Character target = ChooseRandomTarget(allies);
-        if (target != null)
+        if (enemy is Enemy enemyScript)
         {
-            Attack(enemy, target);
+            Character target = enemyScript.ChooseRandomTarget(allies);
+            if (target != null)
+            {
+                enemy.Attack(target);
+            }
         }
-    }
-
-    private Character ChooseRandomTarget(List<Character> possibleTargets)
-    {
-        List<Character> aliveTargets = possibleTargets
-            .Where(t => t != null && t.Stats != null && t.Stats.IsAlive)
-            .ToList();
-
-        if (aliveTargets.Count == 0)
-            return null;
-
-        return aliveTargets[Random.Range(0, aliveTargets.Count)];
     }
 
     public void OnFighterIconClicked(Character clicked)
     {
-        if (!waitingForTargetSelection)
+        if (!waitingForTargetSelection || !enemies.Contains(clicked))
+        {
             return;
+        }
 
-        if (!enemies.Contains(clicked))
-            return;
-
-        Attack(currentCharacter, clicked);
+        currentCharacter.Attack(clicked);
         waitingForTargetSelection = false;
     }
 
-    private void Attack(Character attacker, Character target)
+    private void HighlightCurrentFighter(Character fighter)
     {
-        if (attacker == null || target == null || !target.Stats.IsAlive)
-            return;
-
-        int damage = CalculateDamage(attacker.Stats.attack, target.Stats.defense);
-        target.Stats.TakeDamage(damage);
-
-        Debug.Log($"{attacker.Stats.characterName} attaque {target.Stats.characterName} pour {damage} dégâts !");
-    }
-
-    private int CalculateDamage(int attack, int defense)
-    {
-        float defenseMultiplier = 1f - (defense / 100f);
-        int damage = Mathf.RoundToInt(attack * defenseMultiplier);
-        return Mathf.Max(1, damage); 
-    }
-
-    private void HighlightcurrentCharacter(Character fighter)
-    {
-        // Désactiver toutes les bordures
         foreach (var icon in allyIcons)
+        {
             icon.SetActiveTurn(false);
-        foreach (var icon in enemyIcons)
-            icon.SetActiveTurn(false);
+        }
 
-        // Activer la bordure du fighter actuel
+        foreach (var icon in enemyIcons)
+        {
+            icon.SetActiveTurn(false);
+        }
+
         FighterIconUI fighterIcon = GetIconForFighter(fighter);
         if (fighterIcon != null)
+        {
             fighterIcon.SetActiveTurn(true);
+        }
     }
 
     private FighterIconUI GetIconForFighter(Character fighter)
     {
-        if (allies.Contains(fighter))
+        int index = allies.IndexOf(fighter);
+        if (index >= 0 && index < allyIcons.Count)
         {
-            int index = allies.IndexOf(fighter);
-            if (index >= 0 && index < allyIcons.Count)
-                return allyIcons[index];
+            return allyIcons[index];
         }
-        else if (enemies.Contains(fighter))
+
+        index = enemies.IndexOf(fighter);
+        if (index >= 0 && index < enemyIcons.Count)
         {
-            int index = enemies.IndexOf(fighter);
-            if (index >= 0 && index < enemyIcons.Count)
-                return enemyIcons[index];
+            return enemyIcons[index];
         }
+
         return null;
     }
 
     private void SetEnemyIconsClickable(bool clickable)
     {
         foreach (var icon in enemyIcons)
+        {
             icon.SetClickable(clickable);
+        }
     }
 
     private void UpdateAllIcons()
     {
         foreach (var icon in allyIcons)
-            icon.UpdateVisual();
+        {
+            icon.UpdateIconUI();
+        }
+
         foreach (var icon in enemyIcons)
-            icon.UpdateVisual();
+        {
+            icon.UpdateIconUI();
+        }
+    }
+
+    private void UpdateTurnOrderDisplay()
+    {
+        foreach (var icon in turnOrderIcons)
+        {
+            if (icon != null)
+                Destroy(icon);
+        }
+        turnOrderIcons.Clear();
+
+        for (int i = 0; i < turnOrder.Count; i++)
+        {
+            Character fighter = turnOrder[i];
+            if (fighter == null || !fighter.IsAlive)
+            {
+                continue;
+            }
+
+            GameObject iconObj = Instantiate(turnIconPrefab, turnOrderContainer);
+            ActivateTurnIconImage(iconObj, fighter);
+            SetTurnIconNumber(iconObj, i + 1);
+            SetTurnIconBackground(iconObj, fighter);
+            HighlightTurnIcon(iconObj, fighter == currentCharacter);
+            turnOrderIcons.Add(iconObj);
+        }
+    }
+
+    private void SetTurnIconNumber(GameObject iconObj, int number)
+    {
+        TMPro.TextMeshProUGUI numberText = iconObj.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (numberText != null)
+        {
+            numberText.text = number.ToString();
+            return;
+        }
+
+        UnityEngine.UI.Text text = iconObj.GetComponentInChildren<UnityEngine.UI.Text>();
+        if (text != null)
+        {
+            text.text = number.ToString();
+        }
+    }
+
+    private void SetTurnIconBackground(GameObject iconObj, Character fighter)
+    {
+        UnityEngine.UI.Image backgroundImage = iconObj.GetComponent<UnityEngine.UI.Image>();
+        if (backgroundImage != null)
+        {
+            backgroundImage.color = allies.Contains(fighter) ? allyColor : enemyColor;
+        }
+    }
+
+    private void HighlightTurnIcon(GameObject iconObj, bool isActive)
+    {
+        string[] tags = { "HealerImg", "MageImg", "TankImg", "AssassinImg", "EnemyImg" };
+        UnityEngine.UI.Image[] allImages = iconObj.GetComponentsInChildren<UnityEngine.UI.Image>();
+        Color highlightColor = isActive ? new Color(1f, 1f, 0.5f, 1f) : Color.white;
+
+        foreach (var img in allImages)
+        {
+            bool isTaggedImage = false;
+            foreach (string tag in tags)
+            {
+                if (img.CompareTag(tag))
+                {
+                    isTaggedImage = true;
+                    break;
+                }
+            }
+
+            if (isTaggedImage)
+            {
+                img.color = highlightColor;
+            }
+        }
+    }
+
+    private void ActivateTurnIconImage(GameObject iconObj, Character fighter)
+    {
+        string[] tags = { "HealerImg", "MageImg", "TankImg", "AssassinImg", "EnemyImg" };
+        UnityEngine.UI.Image[] allImages = iconObj.GetComponentsInChildren<UnityEngine.UI.Image>(true);
+        foreach (var img in allImages)
+        {
+            foreach (string tag in tags)
+            {
+                if (img.CompareTag(tag))
+                {
+                    img.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        string imageTag = GetImageTagForCharacter(fighter);
+        if (!string.IsNullOrEmpty(imageTag))
+        {
+            foreach (var img in allImages)
+            {
+                if (img.CompareTag(imageTag))
+                {
+                    img.gameObject.SetActive(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    private string GetImageTagForCharacter(Character character)
+    {
+        if (character is Enemy)
+        {
+            return "EnemyImg";
+        }
+        else if (character is Hero hero)
+        {
+            string heroName = hero.heroName.ToLower();
+
+            if (heroName.Contains("healer"))
+            {
+                return "HealerImg";
+            }
+            else if (heroName.Contains("mage"))
+            {
+                return "MageImg";
+            }
+            else if (heroName.Contains("tank"))
+            {
+                return "TankImg";
+            }
+            else if (heroName.Contains("assassin"))
+            {
+                return "AssassinImg";
+            }
+        }
+
+        return "EnemyImg";
     }
 
     private bool CheckVictory()
     {
-        bool allEnemiesDead = enemies.All(e => e == null || !e.Stats.IsAlive);
-        bool allAlliesDead = allies.All(a => a == null || !a.Stats.IsAlive);
+        bool allEnemiesDead = enemies.All(e => e?.Stats?.IsAlive != true);
+        bool allAlliesDead = allies.All(a => a?.Stats?.IsAlive != true);
 
         if (allEnemiesDead)
         {

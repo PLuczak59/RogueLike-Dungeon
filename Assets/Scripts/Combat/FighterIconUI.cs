@@ -3,14 +3,12 @@ using UnityEngine.UI;
 
 public class FighterIconUI : MonoBehaviour
 {
-    [Header("UI Components")]
-    public Image iconImage;
-    public Image borderImage;
     public Character linkedFighter;
-
     private Button button;
     private Color aliveColor;
     private Color deadColor = Color.gray;
+    private Image activeImage;
+    public Image iconImage;
 
     private void Awake()
     {
@@ -25,34 +23,114 @@ public class FighterIconUI : MonoBehaviour
     {
         linkedFighter = fighter;
         aliveColor = color;
-        iconImage.color = aliveColor;
-        borderImage.enabled = false;
+        ActivateCharacterImage();
+    }
+
+    private void ActivateCharacterImage()
+    {
+        DesactivateAllTaggedImages();
+
+        string imageTag = GetImageTagForCharacter(linkedFighter);
+        if (string.IsNullOrEmpty(imageTag))
+        {
+            return;
+        }
+
+        Image[] allImages = GetComponentsInChildren<Image>(true);
+        foreach (Image img in allImages)
+        {
+            if (img.CompareTag(imageTag))
+            {
+                img.gameObject.SetActive(true);
+                activeImage = img;
+                break;
+            }
+        }
+    }
+
+    private string GetImageTagForCharacter(Character character)
+    {
+        if (character is Enemy)
+        {
+            return "EnemyImg";
+        }
+        else if (character is Hero hero)
+        {
+            string heroName = hero.heroName.ToLower();
+            if (heroName.Contains("healer"))
+            {
+                return "HealerImg";
+            }
+            else if (heroName.Contains("mage"))
+            {
+                return "MageImg";
+            }
+            else if (heroName.Contains("tank"))
+            {
+                return "TankImg";
+            }
+            else if (heroName.Contains("assassin"))
+            {
+                return "AssassinImg";
+            }
+        }
+
+        return "EnemyImg";
+    }
+
+    private void DesactivateAllTaggedImages()
+    {
+        string[] tags = { "HealerImg", "MageImg", "TankImg", "AssassinImg", "EnemyImg" };
+        Image[] allImages = GetComponentsInChildren<Image>(true);
+
+        foreach (Image img in allImages)
+        {
+            foreach (string tag in tags)
+            {
+                if (img.CompareTag(tag))
+                {
+                    img.gameObject.SetActive(false);
+                    break;
+                }
+            }
+        }
     }
 
     private void OnIconClicked()
     {
-        if (linkedFighter != null && linkedFighter.Stats != null && linkedFighter.Stats.IsAlive)
+        if (linkedFighter?.Stats?.IsAlive == true)
         {
             CombatManager.Instance.OnFighterIconClicked(linkedFighter);
         }
     }
 
-    public void UpdateVisual()
+    public void UpdateIconUI()
     {
-        if (linkedFighter != null && linkedFighter.Stats != null && !linkedFighter.Stats.IsAlive)
+        bool isAlive = linkedFighter.Stats.IsAlive;
+
+        if (activeImage != null)
         {
-            iconImage.color = deadColor;
-            button.interactable = false;
+            activeImage.color = isAlive ? Color.white : deadColor;
         }
+
+        if (iconImage != null)
+        {
+            iconImage.color = isAlive ? aliveColor : deadColor;
+        }
+
+        button.interactable = isAlive;
     }
 
     public void SetActiveTurn(bool active)
     {
-        borderImage.enabled = active;
+        if (activeImage != null)
+        {
+            activeImage.color = active ? new Color(1f, 1f, 0.5f, 1f) : Color.white;
+        }
     }
 
     public void SetClickable(bool clickable)
     {
-        button.interactable = clickable && linkedFighter != null && linkedFighter.Stats != null && linkedFighter.Stats.IsAlive;
+        button.interactable = clickable && linkedFighter?.Stats?.IsAlive == true;
     }
 }

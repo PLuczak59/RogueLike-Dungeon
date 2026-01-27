@@ -3,20 +3,16 @@ using UnityEngine;
 [System.Serializable]
 public class CharacterStats
 {
-    // Attributs publics
     public string characterName;
     public int maxHP;
     public int currentHP;
     public int attack;
-    [Range(0, 100)]
     public int defense;
     public int initiative;
 
-    // Properties
     public bool IsAlive => currentHP > 0;
-    public float HPPercent => maxHP > 0 ? (float)currentHP / maxHP : 0f;
+    public float HPPercent => currentHP / maxHP;
 
-    // Constructeur
     public CharacterStats(string name, int hp, int atk, int def, int ini)
     {
         characterName = name;
@@ -27,7 +23,6 @@ public class CharacterStats
         initiative = ini;
     }
 
-    // Méthode pour prendre des dégâts
     public void TakeDamage(int amount)
     {
         if (amount <= 0)
@@ -48,7 +43,6 @@ public class CharacterStats
         }
     }
 
-    // Méthode pour se soigner
     public void Heal(int amount)
     {
         if (amount <= 0)
@@ -62,12 +56,8 @@ public class CharacterStats
         int actualHealing = currentHP - previousHP;
 
         if (actualHealing > 0)
-        {
-            Debug.Log($" [CharacterStats] {characterName} récupère {actualHealing} HP ! HP: {previousHP} -> {currentHP}/{maxHP}");
-        }
+            Debug.Log($"[CharacterStats] {characterName} récupère {actualHealing} HP ! HP: {previousHP} -> {currentHP}/{maxHP}");
         else
-        {
             Debug.Log($"[CharacterStats] {characterName} est déjà à pleine vie ! ({currentHP}/{maxHP})");
-        }
     }
 }
