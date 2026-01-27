@@ -6,6 +6,7 @@ public class RoomUI : MonoBehaviour
 {
     public TextMeshProUGUI roomNameText;
     public TextMeshProUGUI descriptionText;
+    public TextMeshProUGUI roomTypeText;
 
     public Button continueButton;
     public Button nextFloorButton;
@@ -13,6 +14,7 @@ public class RoomUI : MonoBehaviour
     public void ShowRoom(RoomData room, DungeonManager manager)
     {
         roomNameText.text = room.roomName;
+        roomTypeText.text = room.type.ToString();
         descriptionText.text = room.description;
 
         continueButton.onClick.RemoveAllListeners();

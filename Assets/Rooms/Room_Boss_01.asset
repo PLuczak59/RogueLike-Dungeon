@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   roomName: Room_Boss_01
   description: "Ce groupe d'ennemi \xE0 l'air bien plus puissant que  les autres"
-  type: 0
+  type: 3

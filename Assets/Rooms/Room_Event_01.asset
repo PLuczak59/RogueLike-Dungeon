@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   roomName: Room_Event_01
   description: "Un Coffre laisse s'\xE9chapper une brume sombre. Que cache-t-il ?"
-  type: 0
+  type: 1

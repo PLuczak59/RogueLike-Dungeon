@@ -15,4 +15,4 @@ MonoBehaviour:
   roomName: Room_Rest_01
   description: Un camp ainsi que des potions vous attendent. vous vous reposez avant
     de reprendre l'exploration
-  type: 0
+  type: 2

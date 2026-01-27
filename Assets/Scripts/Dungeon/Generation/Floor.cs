@@ -7,21 +7,28 @@ public class Floor
 	public int floorIndex;
 	public List<RoomData> availableRooms;
 
-	private List<RoomData> visitedRooms = new();
+	private List<RoomInstance> roomInstances = new();
+
+	public void Init(){
+		roomInstances.Clear();
+		foreach(var room in availableRooms){
+			roomInstances.Add(new RoomInstance(room));
+		}
+	}
 
 	public bool HasUnvisitedRooms(){
-		return visitedRooms.Count < availableRooms.Count;
+		return roomInstances.Exists(r => !r.isVisited);
 	}
 
 	public RoomData GetRandomUnvisitedRoom(){
-		List<RoomData> unvisited = availableRooms.FindAll(r => !visitedRooms.Contains(r));
+		var unvisited = roomInstances.FindAll(r => !r.isVisited);
 
 		if(unvisited.Count == 0){
 			return null;
 		}
 
-		RoomData selected = unvisited[UnityEngine.Random.Range(0, unvisited.Count)];
-		visitedRooms.Add(selected);
-		return selected;
+		var selected = unvisited[UnityEngine.Random.Range(0, unvisited.Count)];
+		selected.isVisited = true;
+		return selected.data;
 	}
 }

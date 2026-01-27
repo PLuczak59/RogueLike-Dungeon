@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   roomName: Room_Loot_01
   description: "Un art\xE9fact est pos\xE9 au sol sur de la mousse"
-  type: 0
+  type: 1

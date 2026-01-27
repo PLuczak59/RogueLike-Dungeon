@@ -10,6 +10,7 @@ public class DungeonManager : MonoBehaviour
 	private Floor currentFloor;
 
 	private void Start(){
+		Debug.Log("Floor count = " + floors.Count);
 		EnterFloor(0);
 	}
 
@@ -17,6 +18,7 @@ public class DungeonManager : MonoBehaviour
 		currentFloor = floors[index];
 		currentFloorIndex = index;
 
+		currentFloor.Init();
 		EnterRandomRoom();
 	}
 
@@ -33,6 +35,7 @@ public class DungeonManager : MonoBehaviour
 
 	public void ContinueExploration()
     {
+		Debug.Log("ContinueExploration called");
         if (currentFloor.HasUnvisitedRooms())
             EnterRandomRoom();
         else
@@ -42,7 +45,7 @@ public class DungeonManager : MonoBehaviour
 	public void GoToNextFloor(){
 		int next = currentFloorIndex + 1;
 		if(next >= floors.Count){
-			Debug.Log("Dungeon terminé !");
+			Debug.Log("Dungeon termine !");
 			return;
 		}
 
