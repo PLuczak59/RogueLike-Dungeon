@@ -6,17 +6,15 @@ using UnityEditor;
 
 public class MainMenuUI : MonoBehaviour
 {
-    private const string DungeonMapSceneName = "DungeonMap";
+    private const string StartGameScene = "DungeonRoom";
 
     // Méthode appelée par le bouton Start
     public void OnStartGame()
     {
-        if (!Application.CanStreamedLevelBeLoaded(DungeonMapSceneName))
-        {
-            Debug.LogError($"[MainMenuUI] Scène introuvable ou non incluse: {DungeonMapSceneName}");
+        if (!Application.CanStreamedLevelBeLoaded(StartGameScene))
             return;
-        }
-        SceneManager.LoadScene(DungeonMapSceneName);
+            
+        SceneManager.LoadScene(StartGameScene);
     }
 
     // Méthode appelée par le bouton Quit
