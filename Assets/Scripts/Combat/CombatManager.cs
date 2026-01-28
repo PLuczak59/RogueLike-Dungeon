@@ -45,6 +45,15 @@ public class CombatManager : MonoBehaviour
 
     private void Start()
     {
+        // Ne démarre que si activé par le GameSceneManager
+        if (enabled && gameObject.activeInHierarchy)
+        {
+            InitializeCombat();
+        }
+    }
+
+    public void StartCombat()
+    {
         InitializeCombat();
     }
 

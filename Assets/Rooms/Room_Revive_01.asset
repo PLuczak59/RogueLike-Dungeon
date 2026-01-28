@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1399a2146354ef14ab75467514f3c479, type: 3}
   m_Name: Room_Revive_01
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
-  roomName: Room_Loot_01
+  roomName: Room_Revive_01
   description: "Un art\xE9fact est pos\xE9 au sol sur de la mousse"
   type: 1

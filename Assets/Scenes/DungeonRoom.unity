@@ -5811,7 +5811,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: af595ad700774e147b909f662be277b7, type: 2}
     - {fileID: 11400000, guid: ec5e06d0c323c924c92b7b8e2254bccf, type: 2}
     - {fileID: 11400000, guid: ec7f5685eac793841b71c276abccdb74, type: 2}
-  roomUI: {fileID: 0}
+  roomUI: {fileID: 1108437206}
+  gameSceneManager: {fileID: 2055580833}
 --- !u!4 &2043104815
 Transform:
   m_ObjectHideFlags: 0
@@ -5929,7 +5930,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
---- !u!1 &2070841430
+--- !u!1 &2055580832
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5937,37 +5938,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2070841431}
-  m_Layer: 5
-  m_Name: AllyPositions
+  - component: {fileID: 2055580834}
+  - component: {fileID: 2055580833}
+  m_Layer: 0
+  m_Name: GameSceneManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2070841431
-RectTransform:
+--- !u!114 &2055580833
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2070841430}
+  m_GameObject: {fileID: 2055580832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9211e3365d6390841b53a0848c3a768f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
+  FightRoom: {fileID: 653240178}
+  CampFireRoom: {fileID: 0}
+  FountainReviveRoom: {fileID: 0}
+  BossRoom: {fileID: 0}
+  dungeonManager: {fileID: 2043104814}
+  combatManager: {fileID: 1051821763}
+--- !u!4 &2055580834
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055580832}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 507.49884, y: 184.4345, z: 1.06812}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 236069053}
-  - {fileID: 28390629}
-  - {fileID: 2087148526}
-  - {fileID: 1555408603}
-  m_Father: {fileID: 958284001}
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2078847066
 GameObject:
   m_ObjectHideFlags: 0
@@ -6133,3 +6145,4 @@ SceneRoots:
   - {fileID: 488372687}
   - {fileID: 1108437207}
   - {fileID: 2043104815}
+  - {fileID: 2055580834}

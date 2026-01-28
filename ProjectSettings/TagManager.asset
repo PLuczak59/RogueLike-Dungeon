@@ -9,7 +9,7 @@ TagManager:
   - TankImg
   - AssassinImg
   - EnemyImg
-  - DeadImg
+  - Room
   layers:
   - Default
   - TransparentFX
