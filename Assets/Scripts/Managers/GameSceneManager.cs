@@ -184,22 +184,6 @@ public class GameSceneManager : MonoBehaviour
             }
         }
     }
-    
-    private System.Collections.IEnumerator VerifyGUIViewAfterFrame()
-    {
-        yield return null; // Attendre une frame
-        
-        if (dungeonManager != null && dungeonManager.roomUI != null && dungeonManager.roomUI.GUIView != null)
-        {
-            Debug.Log($"[GameSceneManager] Vérification après frame - GUIView.activeInHierarchy: {dungeonManager.roomUI.GUIView.activeInHierarchy}");
-            
-            if (!dungeonManager.roomUI.GUIView.activeInHierarchy)
-            {
-                Debug.LogWarning("[GameSceneManager] GUIView s'est désactivé ! Tentative de réactivation...");
-                dungeonManager.roomUI.GUIView.SetActive(true);
-            }
-        }
-    }
 
     private void EnsurePartyInitialized()
     {

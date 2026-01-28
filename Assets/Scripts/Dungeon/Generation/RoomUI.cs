@@ -50,16 +50,11 @@ public class RoomUI : MonoBehaviour
             Debug.Log($"[RoomUI] GUIView.activeInHierarchy before: {GUIView.activeInHierarchy}");
             Debug.Log($"[RoomUI] GUIView.activeInHierarchy before: {GUIView.activeInHierarchy}");
             GUIView.SetActive(true);
-            Debug.Log($"[RoomUI] GUIView.activeInHierarchy after: {GUIView.activeInHierarchy}");
-            Debug.Log($"[RoomUI] GUIView.activeInHierarchy after: {GUIView.activeInHierarchy}");
-            Debug.Log("[RoomUI] GUIView activé pour ShowChoiceUI");
         }
         else
         {
             Debug.LogError("[RoomUI] GUIView est null ! Impossible d'afficher l'interface de choix.");
-            return;
-            Debug.LogError("[RoomUI] GUIView est null ! Impossible d'afficher l'interface de choix.");
-            return;
+            yield break;
         }
         
         roomNameText.text = title;
