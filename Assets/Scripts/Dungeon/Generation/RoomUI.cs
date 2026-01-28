@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -31,8 +32,12 @@ public class RoomUI : MonoBehaviour
     /// <summary>
     /// Affiche l'UI avec un message personnalisé et configure les boutons
     /// </summary>
-    public void ShowChoiceUI(string title, string description, DungeonManager manager)
+    public IEnumerator ShowChoiceUI(string title, string description, DungeonManager manager)
     {
+        Debug.Log($"[RoomUI] ShowChoiceUI called with title: '{title}'");
+        Debug.Log($"[RoomUI] gameObject.activeInHierarchy: {gameObject.activeInHierarchy}");
+        Debug.Log($"[RoomUI] GUIView is null: {GUIView == null}");
+        
         Debug.Log($"[RoomUI] ShowChoiceUI called with title: '{title}'");
         Debug.Log($"[RoomUI] gameObject.activeInHierarchy: {gameObject.activeInHierarchy}");
         Debug.Log($"[RoomUI] GUIView is null: {GUIView == null}");
@@ -43,12 +48,16 @@ public class RoomUI : MonoBehaviour
         if (GUIView != null)
         {
             Debug.Log($"[RoomUI] GUIView.activeInHierarchy before: {GUIView.activeInHierarchy}");
+            Debug.Log($"[RoomUI] GUIView.activeInHierarchy before: {GUIView.activeInHierarchy}");
             GUIView.SetActive(true);
+            Debug.Log($"[RoomUI] GUIView.activeInHierarchy after: {GUIView.activeInHierarchy}");
             Debug.Log($"[RoomUI] GUIView.activeInHierarchy after: {GUIView.activeInHierarchy}");
             Debug.Log("[RoomUI] GUIView activé pour ShowChoiceUI");
         }
         else
         {
+            Debug.LogError("[RoomUI] GUIView est null ! Impossible d'afficher l'interface de choix.");
+            return;
             Debug.LogError("[RoomUI] GUIView est null ! Impossible d'afficher l'interface de choix.");
             return;
         }

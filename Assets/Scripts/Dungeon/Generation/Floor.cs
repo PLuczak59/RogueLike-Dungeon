@@ -13,20 +13,20 @@ public class Floor
 	public List<RoomInstance> RoomInstances => roomInstances;
 
 	public void Init(){
-		roomInstances.Clear();
+		_roomInstances.Clear();
 		Debug.Log($"[Floor] Initialisation de l'étage {floorIndex} avec {availableRooms.Count} salles disponibles:");
 		foreach(var room in availableRooms){
-			roomInstances.Add(new RoomInstance(room));
+			_roomInstances.Add(new RoomInstance(room));
 			Debug.Log($"  - {room.roomName} (Type: {room.type})");
 		}
 	}
 
 	public bool HasUnvisitedRooms(){
-		return roomInstances.Exists(r => !r.isVisited);
+		return _roomInstances.Exists(r => !r.isVisited);
 	}
 
 	public RoomData GetRandomUnvisitedRoom(){
-		var unvisited = roomInstances.FindAll(r => !r.isVisited);
+		var unvisited = _roomInstances.FindAll(r => !r.isVisited);
 
 		if(unvisited.Count == 0){
 			Debug.Log("[Floor] Aucune salle non visitée disponible");

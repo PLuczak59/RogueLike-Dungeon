@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -160,11 +161,27 @@ public class GameSceneManager : MonoBehaviour
             }
             
             Debug.Log($"[GameSceneManager] Affichage de l'UI de choix pour salle {roomType}");
-            dungeonManager.roomUI.ShowChoiceUI(title, description, dungeonManager);
+            StartCoroutine(dungeonManager.roomUI.ShowChoiceUI(title, description, dungeonManager));
         }
         else
         {
             Debug.LogWarning("[GameSceneManager] DungeonManager ou RoomUI non assigné pour ShowRoomChoiceUI");
+        }
+    }
+    
+    private System.Collections.IEnumerator VerifyGUIViewAfterFrame()
+    {
+        yield return null; // Attendre une frame
+        
+        if (dungeonManager != null && dungeonManager.roomUI != null && dungeonManager.roomUI.GUIView != null)
+        {
+            Debug.Log($"[GameSceneManager] Vérification après frame - GUIView.activeInHierarchy: {dungeonManager.roomUI.GUIView.activeInHierarchy}");
+            
+            if (!dungeonManager.roomUI.GUIView.activeInHierarchy)
+            {
+                Debug.LogWarning("[GameSceneManager] GUIView s'est désactivé ! Tentative de réactivation...");
+                dungeonManager.roomUI.GUIView.SetActive(true);
+            }
         }
     }
     
@@ -195,6 +212,8 @@ public class GameSceneManager : MonoBehaviour
     {
         Debug.Log($"[GameSceneManager] OnCombatEnded called with victory: {victory}");
         
+        Debug.Log($"[GameSceneManager] OnCombatEnded called with victory: {victory}");
+        
         if (victory)
         {
             // Vérifier l'état du donjon avant d'afficher l'UI
@@ -216,12 +235,16 @@ public class GameSceneManager : MonoBehaviour
                 // S'assurer que le RoomUI est visible avant d'afficher les choix
                 dungeonManager.roomUI.gameObject.SetActive(true);
                 Debug.Log($"[GameSceneManager] RoomUI.gameObject.activeInHierarchy: {dungeonManager.roomUI.gameObject.activeInHierarchy}");
+                Debug.Log($"[GameSceneManager] RoomUI.gameObject.activeInHierarchy: {dungeonManager.roomUI.gameObject.activeInHierarchy}");
                 
                 dungeonManager.roomUI.ShowChoiceUI(
                     "Victoire !", 
                     "Que souhaitez-vous faire maintenant ?", 
                     dungeonManager
                 );
+                
+                // Double vérification après un frame
+                StartCoroutine(VerifyGUIViewAfterFrame());
                 
                 // Double vérification après un frame
                 StartCoroutine(VerifyGUIViewAfterFrame());
