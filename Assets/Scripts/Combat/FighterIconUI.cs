@@ -9,6 +9,8 @@ public class FighterIconUI : MonoBehaviour
     private Color deadColor = Color.gray;
     private Image activeImage;
     public Image iconImage;
+    private Slider healthBar;
+    private Image healthBarFill;
 
     private void Awake()
     {
@@ -17,6 +19,29 @@ public class FighterIconUI : MonoBehaviour
         {
             button.onClick.AddListener(OnIconClicked);
         }
+
+        InitializeHealthBar();
+    }
+
+    private void InitializeHealthBar()
+    {
+        Transform healBarTransform = transform.Find("HealBar");
+        if (healBarTransform != null)
+        {
+            healthBar = healBarTransform.GetComponent<Slider>();
+            if (healthBar == null)
+            {
+                Transform fillArea = healBarTransform.Find("Fill Area");
+                if (fillArea != null)
+                {
+                    Transform fill = fillArea.Find("Fill");
+                    if (fill != null)
+                    {
+                        healthBarFill = fill.GetComponent<Image>();
+                    }
+                }
+            }
+        }
     }
 
     public void Initialize(Character fighter, Color color)
@@ -24,6 +49,21 @@ public class FighterIconUI : MonoBehaviour
         linkedFighter = fighter;
         aliveColor = color;
         ActivateCharacterImage();
+        InitializeHealthBarValues();
+    }
+
+    private void InitializeHealthBarValues()
+    {
+
+        if (healthBar != null)
+        {
+            healthBar.maxValue = linkedFighter.Stats.maxHP;
+            healthBar.value = linkedFighter.Stats.currentHP;
+        }
+        else if (healthBarFill != null)
+        {
+            healthBarFill.fillAmount = linkedFighter.Stats.HPPercent;
+        }
     }
 
     private void ActivateCharacterImage()
@@ -80,7 +120,7 @@ public class FighterIconUI : MonoBehaviour
 
     private void DesactivateAllTaggedImages()
     {
-        string[] tags = { "HealerImg", "MageImg", "TankImg", "AssassinImg", "EnemyImg" };
+        string[] tags = { "HealerImg", "MageImg", "TankImg", "AssassinImg", "EnemyImg", "DeadImg" };
         Image[] allImages = GetComponentsInChildren<Image>(true);
 
         foreach (Image img in allImages)
@@ -108,17 +148,51 @@ public class FighterIconUI : MonoBehaviour
     {
         bool isAlive = linkedFighter.Stats.IsAlive;
 
-        if (activeImage != null)
+        if (isAlive)
         {
-            activeImage.color = isAlive ? Color.white : deadColor;
+            ActivateCharacterImage();
+        }
+        else
+        {
+            ActivateDeadImage();
         }
 
-        if (iconImage != null)
+        if (iconImage != null && !isAlive)
         {
-            iconImage.color = isAlive ? aliveColor : deadColor;
+            iconImage.color = deadColor;
         }
+
+        UpdateHealthBar();
 
         button.interactable = isAlive;
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            healthBar.value = linkedFighter.Stats.currentHP;
+        }
+        else if (healthBarFill != null)
+        {
+            healthBarFill.fillAmount = linkedFighter.Stats.HPPercent;
+        }
+    }
+
+    private void ActivateDeadImage()
+    {
+        DesactivateAllTaggedImages();
+
+        Image[] allImages = GetComponentsInChildren<Image>(true);
+        foreach (Image img in allImages)
+        {
+            if (img.CompareTag("DeadImg"))
+            {
+                img.gameObject.SetActive(true);
+                activeImage = img;
+                break;
+            }
+        }
     }
 
     public void SetActiveTurn(bool active)
