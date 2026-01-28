@@ -1563,6 +1563,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 830494004}
+  - {fileID: 1899834562}
   - {fileID: 958284001}
   - {fileID: 2137048275}
   m_Father: {fileID: 0}
@@ -2433,6 +2434,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 642163565}
   m_CullTransparentMesh: 1
+--- !u!1 &648999779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 648999780}
+  - component: {fileID: 648999781}
+  m_Layer: 0
+  m_Name: HealManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &648999780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648999779}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1745624490}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &648999781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648999779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3495c15c237719a49b120203692f432b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealManager
+  partymanager: {fileID: 492425737}
+  healAmount: 50
+  reviveHP: 100
 --- !u!1 &653240178
 GameObject:
   m_ObjectHideFlags: 0
@@ -3562,6 +3610,7 @@ MonoBehaviour:
   roomNameText: {fileID: 1462938797}
   descriptionText: {fileID: 321652974}
   roomTypeText: {fileID: 528261675}
+  GUIView: {fileID: 79685846}
   continueButton: {fileID: 642163567}
   nextFloorButton: {fileID: 253347476}
 --- !u!4 &1108437207
@@ -5083,6 +5132,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 516535889}
+  - {fileID: 648999780}
   - {fileID: 1154947002}
   - {fileID: 1526873899}
   m_Father: {fileID: 0}
@@ -5303,6 +5353,53 @@ RectTransform:
   m_AnchoredPosition: {x: -6, y: 0.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1899834561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1899834562}
+  - component: {fileID: 1899834563}
+  m_Layer: 0
+  m_Name: HealManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1899834562
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1899834561}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 471444750}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1899834563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1899834561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3495c15c237719a49b120203692f432b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealManager
+  partymanager: {fileID: 492425737}
+  healAmount: 50
+  reviveHP: 25
 --- !u!1 &1923727626
 GameObject:
   m_ObjectHideFlags: 0
@@ -5597,10 +5694,7 @@ MonoBehaviour:
   - floorIndex: 0
     availableRooms:
     - {fileID: 11400000, guid: ec5e06d0c323c924c92b7b8e2254bccf, type: 2}
-    - {fileID: 11400000, guid: ec5e06d0c323c924c92b7b8e2254bccf, type: 2}
     - {fileID: 11400000, guid: ec7f5685eac793841b71c276abccdb74, type: 2}
-    - {fileID: 11400000, guid: ec5e06d0c323c924c92b7b8e2254bccf, type: 2}
-    - {fileID: 11400000, guid: ec5e06d0c323c924c92b7b8e2254bccf, type: 2}
   - floorIndex: 1
     availableRooms:
     - {fileID: 11400000, guid: af595ad700774e147b909f662be277b7, type: 2}
@@ -5784,6 +5878,7 @@ MonoBehaviour:
   dungeonManager: {fileID: 2043104814}
   combatManager: {fileID: 1051821763}
   partyManager: {fileID: 492425737}
+  healManager: {fileID: 0}
   mainMenuSceneName: MainMenu
 --- !u!4 &2055580834
 Transform:

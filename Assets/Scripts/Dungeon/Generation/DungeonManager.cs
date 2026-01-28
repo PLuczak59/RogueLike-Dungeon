@@ -7,8 +7,8 @@ public class DungeonManager : MonoBehaviour
 	public RoomUI roomUI;
 	public GameSceneManager gameSceneManager;
 
-	private int currentFloorIndex = 0;
-	private Floor currentFloor;
+	public int currentFloorIndex { get; private set; } = 0;
+	public Floor currentFloor { get; private set; }
 
 	private void Start(){
 		Debug.LogError("Floor count = " + floors.Count);
@@ -19,6 +19,7 @@ public class DungeonManager : MonoBehaviour
 		currentFloor = floors[index];
 		currentFloorIndex = index;
 
+		Debug.Log($"[DungeonManager] Entrée dans l'étage {index}");
 		currentFloor.Init();
 		EnterRandomRoom();
 	}
@@ -51,13 +52,14 @@ public class DungeonManager : MonoBehaviour
             return;
         }
 
+        Debug.Log($"[DungeonManager] Entrée dans la salle: {room.roomName} (Type: {room.type})");
         gameSceneManager.ActivateSceneForRoomType(room.type);
         roomUI.ShowRoom(room, this);		
 	}
 
 	public void ContinueExploration()
     {
-		Debug.LogError("ContinueExploration called");
+		Debug.Log("[DungeonManager] Continuation de l'exploration demandée par le joueur");
         if (currentFloor.HasUnvisitedRooms())
             EnterRandomRoom();
         else
