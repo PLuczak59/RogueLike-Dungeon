@@ -5,12 +5,13 @@ public class DungeonManager : MonoBehaviour
 {
 	public List<Floor> floors;
 	public RoomUI roomUI;
+	public GameSceneManager gameSceneManager;
 
 	private int currentFloorIndex = 0;
 	private Floor currentFloor;
 
 	private void Start(){
-		Debug.Log("Floor count = " + floors.Count);
+		Debug.LogError("Floor count = " + floors.Count);
 		EnterFloor(0);
 	}
 
@@ -23,19 +24,40 @@ public class DungeonManager : MonoBehaviour
 	}
 
 	public void EnterRandomRoom(){
+
+		 if (gameSceneManager == null)
+    {
+        Debug.LogError("gameSceneManager est NULL !");
+        return;
+    }
+
+    if (roomUI == null)
+    {
+        Debug.LogError("roomUI est NULL !");
+        return;
+    }
+
+    if (currentFloor == null)
+    {
+        Debug.LogError("currentFloor est NULL !");
+        return;
+    }
+
 		RoomData room = currentFloor.GetRandomUnvisitedRoom();
 
-		if(room == null){
-			GoToNextFloor();
-			return;
-		}
+        if (room == null)
+        {
+            GoToNextFloor();
+            return;
+        }
 
-		roomUI.ShowRoom(room, this);
+        gameSceneManager.ActivateSceneForRoomType(room.type);
+        roomUI.ShowRoom(room, this);		
 	}
 
 	public void ContinueExploration()
     {
-		Debug.Log("ContinueExploration called");
+		Debug.LogError("ContinueExploration called");
         if (currentFloor.HasUnvisitedRooms())
             EnterRandomRoom();
         else
