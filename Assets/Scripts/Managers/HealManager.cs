@@ -25,11 +25,11 @@ public class HealManager : MonoBehaviour
 
         switch (roomType)
         {
-            case RoomType.Event: // CampFire - Soins
-                HealAliveMembers();
-                break;
-            case RoomType.Rest: // Fountain - Résurrection
+            case RoomType.Event: // Event - Résurrection
                 ReviveDeadMembers();
+                break;
+            case RoomType.Rest: // Rest - Soins
+                HealAliveMembers();
                 break;
             default:
                 Debug.LogWarning($"[HealManager] Type de salle non supporté pour les soins: {roomType}");

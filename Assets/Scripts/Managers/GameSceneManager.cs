@@ -147,12 +147,12 @@ public class GameSceneManager : MonoBehaviour
             switch (roomType)
             {
                 case RoomType.Event:
-                    title = "Feu de camp";
-                    description = "Vos héros ont été soignés ! Que souhaitez-vous faire maintenant ?";
+                    title = "Salle de résurrection";
+                    description = "Vos héros morts ont été ressuscités ! Que souhaitez-vous faire maintenant ?";
                     break;
                 case RoomType.Rest:
-                    title = "Fontaine de résurrection";
-                    description = "Vos héros morts ont été ressuscités ! Que souhaitez-vous faire maintenant ?";
+                    title = "Salle de soins";
+                    description = "Vos héros ont été soignés ! Que souhaitez-vous faire maintenant ?";
                     break;
                 default:
                     title = "Salle terminée";
