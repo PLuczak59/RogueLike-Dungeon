@@ -49,7 +49,14 @@ public class GameSceneManager : MonoBehaviour
         {
             Debug.Log("BossRoom off");
             BossRoom.SetActive(false);
-        }   
+        }
+        
+        // S'assurer que le GUIView est également désactivé
+        if (dungeonManager != null && dungeonManager.roomUI != null && dungeonManager.roomUI.GUIView != null)
+        {
+            dungeonManager.roomUI.GUIView.SetActive(false);
+            Debug.Log("[GameSceneManager] GUIView désactivé dans DeactivateAllScenes");
+        }
     }
 
     public void StartDungeonExploration()
