@@ -8,6 +8,9 @@ public class Floor
 	public List<RoomData> availableRooms;
 
 	private List<RoomInstance> roomInstances = new();
+	
+	// Propriété publique pour accéder aux instances de salle
+	public List<RoomInstance> RoomInstances => roomInstances;
 
 	public void Init(){
 		roomInstances.Clear();
