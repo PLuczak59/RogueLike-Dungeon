@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -31,7 +32,7 @@ public class RoomUI : MonoBehaviour
     /// <summary>
     /// Affiche l'UI avec un message personnalisé et configure les boutons
     /// </summary>
-    public void ShowChoiceUI(string title, string description, DungeonManager manager)
+    public IEnumerator ShowChoiceUI(string title, string description, DungeonManager manager)
     {
         Debug.Log($"[RoomUI] ShowChoiceUI called with title: '{title}'");
         Debug.Log($"[RoomUI] gameObject.activeInHierarchy: {gameObject.activeInHierarchy}");
@@ -106,6 +107,27 @@ public class RoomUI : MonoBehaviour
             HideChoiceUI();
             manager.GoToNextFloor();
         });
+        
+        // Vérifications finales des boutons
+        if (continueButton != null)
+        {
+            Debug.Log($"[RoomUI] continueButton - active: {continueButton.gameObject.activeInHierarchy}, interactable: {continueButton.interactable}");
+        }
+        if (nextFloorButton != null)
+        {
+            Debug.Log($"[RoomUI] nextFloorButton - active: {nextFloorButton.gameObject.activeInHierarchy}, interactable: {nextFloorButton.interactable}");
+        }
+        
+        Debug.Log($"[RoomUI] ShowChoiceUI terminé - continueButton.interactable: {continueButton.interactable}, GUIView.activeInHierarchy: {GUIView.activeInHierarchy}");
+        
+        // Forcer un rafraîchissement de l'UI
+        if (GUIView != null)
+        {
+            GUIView.SetActive(false);
+            yield return new WaitForEndOfFrame();
+            GUIView.SetActive(true);
+            Debug.Log("[RoomUI] GUIView forcé à se rafraîchir (désactivé puis réactivé)");
+        }
     
     }
     

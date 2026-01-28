@@ -160,7 +160,7 @@ public class GameSceneManager : MonoBehaviour
             }
             
             Debug.Log($"[GameSceneManager] Affichage de l'UI de choix pour salle {roomType}");
-            dungeonManager.roomUI.ShowChoiceUI(title, description, dungeonManager);
+            StartCoroutine(dungeonManager.roomUI.ShowChoiceUI(title, description, dungeonManager));
         }
         else
         {
