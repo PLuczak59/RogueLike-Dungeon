@@ -2479,8 +2479,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealManager
   partymanager: {fileID: 492425737}
-  healAmount: 50
-  reviveHP: 100
 --- !u!1 &653240178
 GameObject:
   m_ObjectHideFlags: 0
@@ -5398,8 +5396,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealManager
   partymanager: {fileID: 492425737}
-  healAmount: 50
-  reviveHP: 25
 --- !u!1 &1923727626
 GameObject:
   m_ObjectHideFlags: 0
@@ -5878,7 +5874,7 @@ MonoBehaviour:
   dungeonManager: {fileID: 2043104814}
   combatManager: {fileID: 1051821763}
   partyManager: {fileID: 492425737}
-  healManager: {fileID: 0}
+  healManager: {fileID: 1899834563}
   mainMenuSceneName: MainMenu
 --- !u!4 &2055580834
 Transform:
