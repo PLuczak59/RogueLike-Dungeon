@@ -12,11 +12,15 @@ public class GameSceneManager : MonoBehaviour
     [Header("Managers")]
     public DungeonManager dungeonManager;
     public CombatManager combatManager;
+    public PartyManager partyManager;
+    public string mainMenuSceneName = "MainMenu";
 
     private void Awake()
     {
-        // Désactiver toutes les scènes au début
         DeactivateAllScenes();
+
+        if (combatManager != null)
+            combatManager.CombatEnded += OnCombatEnded;
     }
 
 
@@ -60,10 +64,11 @@ public class GameSceneManager : MonoBehaviour
                 {
                     Debug.Log("FountainReviveRoom on");
                     FightRoom.SetActive(true);
-                    if (combatManager) 
+                    if (combatManager)
                     {
                         combatManager.enabled = true;
-                        combatManager.StartCombat();
+                        EnsurePartyInitialized();
+                        combatManager.StartCombat(partyManager);
                     }
                 }
                 break;
@@ -89,14 +94,41 @@ public class GameSceneManager : MonoBehaviour
                 {
                     Debug.Log("BossRoom off");
                     BossRoom.SetActive(true);
-                    if (combatManager) 
+                    if (combatManager)
                     {
                         combatManager.enabled = true;
-                        combatManager.StartCombat(); // Boss utilise aussi le système de combat
+                        EnsurePartyInitialized();
+                        combatManager.StartCombat(partyManager);
                     }
                 }
                 break;
             
+        }
+    }
+
+    private void EnsurePartyInitialized()
+    {
+        if (partyManager == null || combatManager == null)
+            return;
+        partyManager.InitializeFromPrefabs(combatManager.heroPrefabs);
+    }
+
+    private void OnCombatEnded(bool victory)
+    {
+        if (victory)
+        {
+            if (dungeonManager != null)
+                dungeonManager.ContinueExploration();
+            return;
+        }
+
+        if (UnityEngine.Application.CanStreamedLevelBeLoaded(mainMenuSceneName))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(mainMenuSceneName);
+        }
+        else
+        {
+            Debug.LogWarning($"[GameSceneManager] Scene d'accueil introuvable: {mainMenuSceneName}");
         }
     }
 }

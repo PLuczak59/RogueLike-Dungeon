@@ -11,7 +11,7 @@ public class CharacterStats
     public int initiative;
 
     public bool IsAlive => currentHP > 0;
-    public float HPPercent => currentHP / maxHP;
+    public float HPPercent => maxHP > 0 ? (float)currentHP / maxHP : 0f;
 
     public CharacterStats(string name, int hp, int atk, int def, int ini)
     {
@@ -21,6 +21,13 @@ public class CharacterStats
         attack = atk;
         defense = Mathf.Clamp(def, 0, 100);
         initiative = ini;
+    }
+
+    public CharacterStats Clone()
+    {
+        var copy = new CharacterStats(characterName, maxHP, attack, defense, initiative);
+        copy.currentHP = currentHP;
+        return copy;
     }
 
     public void TakeDamage(int amount)

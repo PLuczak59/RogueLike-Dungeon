@@ -8,6 +8,11 @@ public abstract class Character : MonoBehaviour
     public CharacterStats Stats => stats;
     public bool IsAlive => (stats != null && stats.IsAlive);
 
+    public void SetStats(CharacterStats newStats)
+    {
+        stats = newStats;
+    }
+
     public abstract void Initialize();
 
     protected virtual void Awake()

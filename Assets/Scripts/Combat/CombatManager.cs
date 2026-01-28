@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class CombatManager : MonoBehaviour
 {
@@ -38,59 +39,69 @@ public class CombatManager : MonoBehaviour
     private Character currentCharacter;
     private bool waitingForTargetSelection;
 
+    private PartyManager partyManager;
+    private Coroutine combatCoroutine;
+    private readonly List<GameObject> spawnedCharacters = new List<GameObject>();
+
+    public event Action<bool> CombatEnded;
+
     private void Awake()
     {
         Instance = this;
     }
 
-    private void Start()
+    public void StartCombat(PartyManager party)
     {
-        // Ne démarre que si activé par le GameSceneManager
-        if (enabled && gameObject.activeInHierarchy)
-        {
-            InitializeCombat();
-        }
-    }
-
-    public void StartCombat()
-    {
+        partyManager = party;
+        CleanupCombat();
         InitializeCombat();
     }
 
     private void InitializeCombat()
     {
-        for (int i = 0; i < 4; i++)
+        if (partyManager == null || !partyManager.IsInitialized)
         {
-            if (heroPrefabs == null || i >= heroPrefabs.Length || heroPrefabs[i] == null)
-            {
-                Debug.LogWarning($"Hero prefab manquant à l'index {i}");
-                continue;
-            }
-
-            GameObject heroObj = Instantiate(heroPrefabs[i], allyPositions[i].position, allyPositions[i].rotation);
-            Hero hero = heroObj.GetComponent<Hero>();
-            if (hero != null)
-            {
-                hero.Initialize();
-                allies.Add(hero);
-                CreateIcon(hero, allyColor, allyIconContainer, allyIcons);
-            }
+            Debug.LogError("[CombatManager] PartyManager non initialisé. Impossible de démarrer le combat.");
+            return;
         }
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < partyManager.party.Count; i++)
+        {
+            if (i >= allyPositions.Length)
+                break;
+
+            PartyMember member = partyManager.party[i];
+            if (member == null || member.prefab == null || member.stats == null)
+                continue;
+
+            GameObject heroObj = Instantiate(member.prefab, allyPositions[i].position, allyPositions[i].rotation);
+            spawnedCharacters.Add(heroObj);
+
+            Hero hero = heroObj.GetComponent<Hero>();
+            if (hero == null)
+                continue;
+
+            hero.SetStats(member.stats.Clone());
+            allies.Add(hero);
+            CreateIcon(hero, allyColor, allyIconContainer, allyIcons);
+        }
+
+        for (int i = 0; i < 4 && i < enemyPositions.Length; i++)
         {
             GameObject enemyObj = Instantiate(enemyPrefab, enemyPositions[i].position, enemyPositions[i].rotation);
+            spawnedCharacters.Add(enemyObj);
+
             Enemy enemy = enemyObj.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.enemyName = $"Enemy {i + 1}";
-                enemy.Initialize();
-                enemies.Add(enemy);
-                CreateIcon(enemy, enemyColor, enemyIconContainer, enemyIcons);
-            }
+            if (enemy == null)
+                continue;
+
+            enemy.enemyName = $"Enemy {i + 1}";
+            enemy.Initialize();
+            enemies.Add(enemy);
+            CreateIcon(enemy, enemyColor, enemyIconContainer, enemyIcons);
         }
 
-        StartCoroutine(CombatLoop());
+        combatCoroutine = StartCoroutine(CombatLoop());
     }
 
     private void CreateIcon(Character character, Color color, Transform container, List<FighterIconUI> iconList)
@@ -132,8 +143,10 @@ public class CombatManager : MonoBehaviour
                 UpdateAllIcons();
                 UpdateTurnOrderDisplay();
 
-                if (CheckVictory())
+                bool? result = CheckVictory();
+                if (result.HasValue)
                 {
+                    EndCombat(result.Value);
                     yield break;
                 }
             }
@@ -383,7 +396,7 @@ public class CombatManager : MonoBehaviour
         return "EnemyImg";
     }
 
-    private bool CheckVictory()
+    private bool? CheckVictory()
     {
         bool allEnemiesDead = enemies.All(e => e?.Stats?.IsAlive != true);
         bool allAlliesDead = allies.All(a => a?.Stats?.IsAlive != true);
@@ -397,9 +410,60 @@ public class CombatManager : MonoBehaviour
         if (allAlliesDead)
         {
             Debug.Log("DÉFAITE ! Tous les alliés sont vaincus !");
-            return true;
+            return false;
         }
 
-        return false;
+        return null;
+    }
+
+    private void EndCombat(bool victory)
+    {
+        if (partyManager != null)
+            partyManager.UpdateFromCharacters(allies);
+
+        CombatEnded?.Invoke(victory);
+    }
+
+    private void CleanupCombat()
+    {
+        if (combatCoroutine != null)
+        {
+            StopCoroutine(combatCoroutine);
+            combatCoroutine = null;
+        }
+
+        waitingForTargetSelection = false;
+        currentCharacter = null;
+
+        foreach (var go in spawnedCharacters)
+        {
+            if (go != null)
+                Destroy(go);
+        }
+        spawnedCharacters.Clear();
+
+        foreach (var icon in allyIcons)
+        {
+            if (icon != null)
+                Destroy(icon.gameObject);
+        }
+        foreach (var icon in enemyIcons)
+        {
+            if (icon != null)
+                Destroy(icon.gameObject);
+        }
+        allyIcons.Clear();
+        enemyIcons.Clear();
+
+        foreach (var icon in turnOrderIcons)
+        {
+            if (icon != null)
+                Destroy(icon);
+        }
+        turnOrderIcons.Clear();
+
+        allies.Clear();
+        enemies.Clear();
+        turnOrder.Clear();
     }
 }
