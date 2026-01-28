@@ -11,8 +11,10 @@ public class Floor
 
 	public void Init(){
 		roomInstances.Clear();
+		Debug.Log($"[Floor] Initialisation de l'étage {floorIndex} avec {availableRooms.Count} salles disponibles:");
 		foreach(var room in availableRooms){
 			roomInstances.Add(new RoomInstance(room));
+			Debug.Log($"  - {room.roomName} (Type: {room.type})");
 		}
 	}
 
@@ -24,6 +26,7 @@ public class Floor
 		var unvisited = roomInstances.FindAll(r => !r.isVisited);
 
 		if(unvisited.Count == 0){
+			Debug.Log("[Floor] Aucune salle non visitée disponible");
 			return null;
 		}
 

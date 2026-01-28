@@ -13,6 +13,7 @@ public class GameSceneManager : MonoBehaviour
     public DungeonManager dungeonManager;
     public CombatManager combatManager;
     public PartyManager partyManager;
+    public HealManager healManager;
     public string mainMenuSceneName = "MainMenu";
 
     private void Awake()
@@ -55,6 +56,7 @@ public class GameSceneManager : MonoBehaviour
     }
     public void ActivateSceneForRoomType(RoomType roomType)
     {
+        Debug.Log($"[GameSceneManager] Activation de la scène pour le type: {roomType}");
         DeactivateAllScenes();
 
         switch (roomType)
@@ -78,6 +80,20 @@ public class GameSceneManager : MonoBehaviour
                 {
                     Debug.Log("CampFireRoom on");
                     CampFireRoom.SetActive(true);
+                    
+                    // Activation du HealManager pour soigner les membres vivants
+                    if (healManager != null)
+                    {
+                        Debug.Log("[GameSceneManager] Appel du HealManager pour Event");
+                        healManager.ActivateHealing(RoomType.Event);
+                    }
+                    else
+                    {
+                        Debug.LogError("[GameSceneManager] HealManager est NULL pour Event !");
+                    }
+                    
+                    // Afficher immédiatement l'UI de choix après les soins
+                    ShowRoomChoiceUI(RoomType.Event);
                 }
                 break;
 
@@ -86,6 +102,15 @@ public class GameSceneManager : MonoBehaviour
                 {
                     Debug.Log("FountainReviveRoom on");
                     FountainReviveRoom.SetActive(true);
+                    
+                    // Activation du HealManager pour ressusciter les membres morts
+                    if (healManager != null)
+                    {
+                        healManager.ActivateHealing(RoomType.Rest);
+                    }
+                    
+                    // Afficher immédiatement l'UI de choix après la résurrection
+                    ShowRoomChoiceUI(RoomType.Rest);
                 }
                 break;
 
@@ -106,6 +131,42 @@ public class GameSceneManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Affiche l'UI de choix après une action de salle
+    /// </summary>
+    /// <param name="roomType">Type de salle pour adapter le message</param>
+    private void ShowRoomChoiceUI(RoomType roomType)
+    {
+        if (dungeonManager != null && dungeonManager.roomUI != null)
+        {
+            string title = "";
+            string description = "";
+            
+            switch (roomType)
+            {
+                case RoomType.Event:
+                    title = "Feu de camp";
+                    description = "Vos héros ont été soignés ! Que souhaitez-vous faire maintenant ?";
+                    break;
+                case RoomType.Rest:
+                    title = "Fontaine de résurrection";
+                    description = "Vos héros morts ont été ressuscités ! Que souhaitez-vous faire maintenant ?";
+                    break;
+                default:
+                    title = "Salle terminée";
+                    description = "Que souhaitez-vous faire maintenant ?";
+                    break;
+            }
+            
+            Debug.Log($"[GameSceneManager] Affichage de l'UI de choix pour salle {roomType}");
+            dungeonManager.roomUI.ShowChoiceUI(title, description, dungeonManager);
+        }
+        else
+        {
+            Debug.LogWarning("[GameSceneManager] DungeonManager ou RoomUI non assigné pour ShowRoomChoiceUI");
+        }
+    }
+
     private void EnsurePartyInitialized()
     {
         if (partyManager == null || combatManager == null)
@@ -117,8 +178,26 @@ public class GameSceneManager : MonoBehaviour
     {
         if (victory)
         {
-            if (dungeonManager != null)
-                dungeonManager.ContinueExploration();
+            // Afficher le RoomUI pour permettre au joueur de choisir
+            if (dungeonManager != null && dungeonManager.roomUI != null)
+            {
+                Debug.Log("[GameSceneManager] Affichage de l'UI de choix post-combat");
+                
+                // S'assurer que le RoomUI est visible avant d'afficher les choix
+                dungeonManager.roomUI.gameObject.SetActive(true);
+                
+                dungeonManager.roomUI.ShowChoiceUI(
+                    "Victoire !", 
+                    "Que souhaitez-vous faire maintenant ?", 
+                    dungeonManager
+                );
+            }
+            else
+            {
+                Debug.LogWarning("[GameSceneManager] DungeonManager ou RoomUI non assigné, fallback vers ContinueExploration automatique");
+                if (dungeonManager != null)
+                    dungeonManager.ContinueExploration();
+            }
             return;
         }
 
