@@ -8,8 +8,8 @@ public class Enemy : Character
 
     public override void Initialize()
     {
-        int randomHP = Random.Range(60, 101);
-        int randomAttack = Random.Range(20, 40);
+        int randomHP = Random.Range(60, 100);
+        int randomAttack = Random.Range(10, 30);
         int randomDefense = Random.Range(30, 60);
         int randomInitiative = Random.Range(40, 85);
 
