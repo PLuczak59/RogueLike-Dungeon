@@ -8,7 +8,6 @@ public class MainMenuUI : MonoBehaviour
 {
     private const string StartGameScene = "DungeonRoom";
 
-    // Méthode appelée par le bouton Start
     public void OnStartGame()
     {
         if (!Application.CanStreamedLevelBeLoaded(StartGameScene))
@@ -17,7 +16,6 @@ public class MainMenuUI : MonoBehaviour
         SceneManager.LoadScene(StartGameScene);
     }
 
-    // Méthode appelée par le bouton Quit
     public void OnQuitGame()
     {
         Application.Quit();

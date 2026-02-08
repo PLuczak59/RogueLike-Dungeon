@@ -51,7 +51,6 @@ public class GameSceneManager : MonoBehaviour
             BossRoom.SetActive(false);
         }
         
-        // S'assurer que le GUIView est également désactivé
         if (dungeonManager != null && dungeonManager.roomUI != null && dungeonManager.roomUI.GUIView != null)
         {
             dungeonManager.roomUI.GUIView.SetActive(false);
@@ -90,7 +89,6 @@ public class GameSceneManager : MonoBehaviour
                     Debug.Log("CampFireRoom on");
                     CampFireRoom.SetActive(true);
                     
-                    // Activation du HealManager pour soigner les membres vivants
                     if (healManager != null)
                     {
                         Debug.Log("[GameSceneManager] Appel du HealManager pour Event");
@@ -101,7 +99,6 @@ public class GameSceneManager : MonoBehaviour
                         Debug.LogError("[GameSceneManager] HealManager est NULL pour Event !");
                     }
                     
-                    // Afficher immédiatement l'UI de choix après les soins
                     ShowRoomChoiceUI(RoomType.Event);
                 }
                 break;
@@ -112,13 +109,11 @@ public class GameSceneManager : MonoBehaviour
                     Debug.Log("FountainReviveRoom on");
                     FountainReviveRoom.SetActive(true);
                     
-                    // Activation du HealManager pour ressusciter les membres morts
                     if (healManager != null)
                     {
                         healManager.ActivateHealing(RoomType.Rest);
                     }
                     
-                    // Afficher immédiatement l'UI de choix après la résurrection
                     ShowRoomChoiceUI(RoomType.Rest);
                 }
                 break;
@@ -140,10 +135,6 @@ public class GameSceneManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Affiche l'UI de choix après une action de salle
-    /// </summary>
-    /// <param name="roomType">Type de salle pour adapter le message</param>
     private void ShowRoomChoiceUI(RoomType roomType)
     {
         if (dungeonManager != null && dungeonManager.roomUI != null)
@@ -178,7 +169,7 @@ public class GameSceneManager : MonoBehaviour
     
     private System.Collections.IEnumerator VerifyGUIViewAfterFrame()
     {
-        yield return null; // Attendre une frame
+        yield return null;
         
         if (dungeonManager != null && dungeonManager.roomUI != null && dungeonManager.roomUI.GUIView != null)
         {
@@ -207,7 +198,6 @@ public class GameSceneManager : MonoBehaviour
         
         if (victory)
         {
-            // Vérifier l'état du donjon avant d'afficher l'UI
             if (dungeonManager != null && dungeonManager.currentFloor != null)
             {
                 int unvisitedCount = 0;
@@ -218,12 +208,10 @@ public class GameSceneManager : MonoBehaviour
                 Debug.Log($"[GameSceneManager] Salles non visitées avant affichage UI: {unvisitedCount}");
             }
             
-            // Afficher le RoomUI pour permettre au joueur de choisir
             if (dungeonManager != null && dungeonManager.roomUI != null)
             {
                 Debug.Log("[GameSceneManager] Affichage de l'UI de choix post-combat");
                 
-                // S'assurer que le RoomUI est visible avant d'afficher les choix
                 dungeonManager.roomUI.gameObject.SetActive(true);
                 Debug.Log($"[GameSceneManager] RoomUI.gameObject.activeInHierarchy: {dungeonManager.roomUI.gameObject.activeInHierarchy}");
                 Debug.Log($"[GameSceneManager] RoomUI.gameObject.activeInHierarchy: {dungeonManager.roomUI.gameObject.activeInHierarchy}");
@@ -234,10 +222,8 @@ public class GameSceneManager : MonoBehaviour
                     dungeonManager
                 );
                 
-                // Double vérification après un frame
                 StartCoroutine(VerifyGUIViewAfterFrame());
                 
-                // Double vérification après un frame
                 StartCoroutine(VerifyGUIViewAfterFrame());
             }
             else
