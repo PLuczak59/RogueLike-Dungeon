@@ -25,10 +25,10 @@ public class HealManager : MonoBehaviour
 
         switch (roomType)
         {
-            case RoomType.Event: // Event - Résurrection
+            case RoomType.Event:
                 ReviveDeadMembers();
                 break;
-            case RoomType.Rest: // Rest - Soins
+            case RoomType.Rest:
                 HealAliveMembers();
                 break;
             default:

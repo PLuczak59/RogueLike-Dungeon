@@ -16,7 +16,7 @@ public class DungeonManager : MonoBehaviour
 	}
 
 	private void EnterFloor(int index){
-		// S'assurer que l'UI de choix précédente est fermée
+		
 		if (roomUI != null && roomUI.GUIView != null)
 		{
 			roomUI.GUIView.SetActive(false);
@@ -33,7 +33,6 @@ public class DungeonManager : MonoBehaviour
 
 	public void EnterRandomRoom(){
 
-		// S'assurer que l'UI de choix précédente est fermée
 		if (roomUI != null && roomUI.GUIView != null)
 		{
 			roomUI.GUIView.SetActive(false);
